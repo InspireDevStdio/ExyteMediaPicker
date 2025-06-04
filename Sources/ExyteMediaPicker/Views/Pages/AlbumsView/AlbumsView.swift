@@ -33,21 +33,21 @@ struct AlbumsView: View {
     }
     
     var body: some View {
-        ScrollView {
-            VStack {
-                if let action = permissionsService.photoLibraryAction {
-                    PermissionsActionView(action: .library(action))
-                }
-                if viewModel.isLoading {
-                    ProgressView()
-                        .padding()
-                } else if viewModel.albums.isEmpty {
-                    Text("Empty data")
-                        .font(.title3)
-                        .foregroundColor(theme.main.text)
-                } else {
-                    GeometryReader { g in
-                        let columnWidth = calculateColumnWidth(g.size.width)
+        GeometryReader { g in
+            let columnWidth = calculateColumnWidth(g.size.width)
+            ScrollView {
+                VStack {
+                    if let action = permissionsService.photoLibraryAction {
+                        PermissionsActionView(action: .library(action))
+                    }
+                    if viewModel.isLoading {
+                        ProgressView()
+                            .padding()
+                    } else if viewModel.albums.isEmpty {
+                        Text("Empty data")
+                            .font(.title3)
+                            .foregroundColor(theme.main.text)
+                    } else {
                         LazyVGrid(columns: columns, spacing: 0) {
                             ForEach(viewModel.albums) { album in
                                 AlbumCell(viewModel: AlbumCellViewModel(album: album), size: columnWidth)
@@ -57,9 +57,9 @@ struct AlbumsView: View {
                                     }
                             }
                         }
+                        .frame(maxWidth: .infinity)
                     }
                 }
-                Spacer()
             }
         }
         .onAppear {

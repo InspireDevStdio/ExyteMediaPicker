@@ -159,10 +159,12 @@ public struct MediaPicker<AlbumSelectionContent: View, CameraSelectionContent: V
             VStack(spacing: 0) {
                 if !isInFullscreen {
                     defaultHeaderView
+                        .background(theme.defaultHeader.background)
                 } else {
                     Color.clear.frame(height: 15)
                 }
                 albumSelectionView
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
         }
     }

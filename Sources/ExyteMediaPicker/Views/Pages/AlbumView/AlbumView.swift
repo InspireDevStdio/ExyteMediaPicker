@@ -36,50 +36,46 @@ private extension AlbumView {
 
     @ViewBuilder
     var content: some View {
-        ScrollView {
-            VStack {
-                if let action = permissionsService.photoLibraryAction {
-                    PermissionsActionView(action: .library(action))
-                }
-                if shouldShowCamera, let action = permissionsService.cameraAction {
-                    PermissionsActionView(action: .camera(action))
-                }
-                if viewModel.isLoading {
-                    ProgressView()
-                        .padding()
-                } else if viewModel.assetMediaModels.isEmpty, !shouldShowLoadingCell {
-                    Text("Empty data")
-                        .font(.title3)
-                        .foregroundColor(theme.main.text)
-                } else {
-                    MediasGrid(viewModel.assetMediaModels) {
-#if !targetEnvironment(simulator)
-                        if shouldShowCamera && permissionsService.cameraAction == nil {
-                            LiveCameraCell {
-                                showingCamera = true
-                            }
-                        }
-#endif
-                    } content: { assetMediaModel, cellSize in
-                        cellView(assetMediaModel, size: cellSize)
-                    } loadingCell: {
-                        if shouldShowLoadingCell {
-                            ZStack {
-                                Color.white.opacity(0.5)
-                                ProgressView()
-                            }
-                            .aspectRatio(1, contentMode: .fit)
-                        }
-                    }
-                    .onChange(of: viewModel.assetMediaModels) { newValue in 
-                        selectionService.updateSelection(with: newValue)
-                    }
-                }
-                
-                Spacer()
+        VStack(spacing: 0) {
+            if let action = permissionsService.photoLibraryAction {
+                PermissionsActionView(action: .library(action))
             }
-            .frame(maxWidth: .infinity)
+            if shouldShowCamera, let action = permissionsService.cameraAction {
+                PermissionsActionView(action: .camera(action))
+            }
+            if viewModel.isLoading {
+                ProgressView()
+                    .padding()
+            } else if viewModel.assetMediaModels.isEmpty, !shouldShowLoadingCell {
+                Text("Empty data")
+                    .font(.title3)
+                    .foregroundColor(theme.main.text)
+            } else {
+                MediasGrid(viewModel.assetMediaModels) {
+#if !targetEnvironment(simulator)
+                    if shouldShowCamera && permissionsService.cameraAction == nil {
+                        LiveCameraCell {
+                            showingCamera = true
+                        }
+                    }
+#endif
+                } content: { assetMediaModel, cellSize in
+                    cellView(assetMediaModel, size: cellSize)
+                } loadingCell: {
+                    if shouldShowLoadingCell {
+                        ZStack {
+                            Color.white.opacity(0.5)
+                            ProgressView()
+                        }
+                        .aspectRatio(1, contentMode: .fit)
+                    }
+                }
+                .onChange(of: viewModel.assetMediaModels) { newValue in 
+                    selectionService.updateSelection(with: newValue)
+                }
+            }
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(theme.main.albumSelectionBackground)
         .onTapGesture {
             if keyboardHeightHelper.keyboardDisplayed {
