@@ -5,7 +5,7 @@ import PackageDescription
 let package = Package(
     name: "ExyteMediaPicker",
     platforms: [
-        .iOS(.v17)
+        .iOS(.v16)
     ],
     products: [
         .library(
@@ -14,7 +14,7 @@ let package = Package(
     ],
     dependencies: [
         .package(
-            url: "https://github.com/exyte/AnchoredPopup.git",
+            url: "https://github.com/InspireDevStdio/ExyteAnchoredPopup.git",
             from: "1.0.0"
         )
     ],
@@ -22,7 +22,7 @@ let package = Package(
         .target(
             name: "ExyteMediaPicker",
             dependencies: [
-                .product(name: "AnchoredPopup", package: "AnchoredPopup")
+                .product(name: "AnchoredPopup", package: "ExyteAnchoredPopup")
             ],
             swiftSettings: [
                 .enableExperimentalFeature("StrictConcurrency")

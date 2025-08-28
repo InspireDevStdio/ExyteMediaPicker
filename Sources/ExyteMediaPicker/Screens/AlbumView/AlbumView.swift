@@ -90,7 +90,7 @@ struct AlbumView: View {
                 .aspectRatio(1, contentMode: .fit)
             }
         }
-        .onChange(of: viewModel.assetMediaModels) { _ , newValue in
+        .onChange(of: viewModel.assetMediaModels) { newValue in
             selectionService.updateSelection(with: newValue)
         }
     }
