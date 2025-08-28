@@ -3,7 +3,7 @@
 //
 
 import SwiftUI
-import AnchoredPopup
+import ExyteAnchoredPopup
 
 struct AlbumView: View {
 

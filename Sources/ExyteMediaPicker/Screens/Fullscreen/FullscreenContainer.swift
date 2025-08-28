@@ -4,7 +4,7 @@
 
 import Foundation
 import SwiftUI
-import AnchoredPopup
+import ExyteAnchoredPopup
 
 struct FullscreenContainer: View {
 

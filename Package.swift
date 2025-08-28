@@ -22,7 +22,7 @@ let package = Package(
         .target(
             name: "ExyteMediaPicker",
             dependencies: [
-                .product(name: "AnchoredPopup", package: "ExyteAnchoredPopup")
+                .product(name: "ExyteAnchoredPopup", package: "ExyteAnchoredPopup")
             ],
             swiftSettings: [
                 .enableExperimentalFeature("StrictConcurrency")
