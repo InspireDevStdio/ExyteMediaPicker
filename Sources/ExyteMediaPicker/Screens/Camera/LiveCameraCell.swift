@@ -7,6 +7,7 @@ import SwiftUI
 struct LiveCameraCell: View {
     
     @Environment(\.scenePhase) private var scenePhase
+    @Environment(\.mediaPickerTheme) private var theme
 
     let action: () -> Void
     
@@ -17,15 +18,26 @@ struct LiveCameraCell: View {
         Button {
             action()
         } label: {
-            LiveCameraView(
-                session: cameraViewModel.captureSession,
-                videoGravity: .resizeAspectFill,
-                orientation: orientation
-            )
-            .overlay(
-                Image(systemName: "camera")
-                    .foregroundColor(.white)
-            )
+            ZStack {
+                LiveCameraView(
+                    session: cameraViewModel.captureSession,
+                    videoGravity: .resizeAspectFill,
+                    orientation: orientation
+                )
+                .overlay(
+                    Image(systemName: "camera")
+                        .foregroundColor(.white)
+                )
+                
+                if cameraViewModel.isLoading {
+                    theme.main.cameraBackground
+                        .overlay(
+                            ProgressView()
+                                .progressViewStyle(CircularProgressViewStyle(tint: theme.main.cameraText))
+                                .scaleEffect(1.2)
+                        )
+                }
+            }
         }
         .onChange(of: scenePhase) { _ in
             Task {

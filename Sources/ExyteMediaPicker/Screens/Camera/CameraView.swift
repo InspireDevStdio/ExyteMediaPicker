@@ -8,6 +8,7 @@ import Photos
 struct CustomCameraView<CameraViewContent: View>: View {
 
     @EnvironmentObject private var cameraSelectionService: CameraSelectionService
+    @Environment(\.mediaPickerTheme) private var theme
 
     public typealias CameraViewClosure = ((LiveCameraView, @escaping SimpleClosure, @escaping SimpleClosure, @escaping SimpleClosure, @escaping SimpleClosure, @escaping SimpleClosure, @escaping SimpleClosure, @escaping SimpleClosure) -> CameraViewContent)
 
@@ -20,26 +21,37 @@ struct CustomCameraView<CameraViewContent: View>: View {
     @StateObject private var cameraViewModel = CameraViewModel()
 
     var body: some View {
-        cameraViewBuilder(
-            LiveCameraView(
-                session: cameraViewModel.captureSession,
-                videoGravity: .resizeAspectFill,
-                orientation: .portrait
-            ),
-            { // cancel
-                if cameraSelectionService.hasSelected {
-                    viewModel.showingExitCameraConfirmation = true
-                } else {
-                    didPressCancel()
-                }
-            },
-            { viewModel.setPickerMode(.cameraSelection) }, // show preview of taken photos
-            { Task { await cameraViewModel.takePhoto() } }, // takePhoto
-            { Task { await cameraViewModel.startVideoCapture() } }, // start record video
-            { Task { await cameraViewModel.stopVideoCapture() } }, // stop record video
-            { Task { await cameraViewModel.toggleFlash() } }, // flash off/on
-            { Task { await cameraViewModel.flipCamera() } } // camera back/front
-        )
+        ZStack {
+            cameraViewBuilder(
+                LiveCameraView(
+                    session: cameraViewModel.captureSession,
+                    videoGravity: .resizeAspectFill,
+                    orientation: .portrait
+                ),
+                { // cancel
+                    if cameraSelectionService.hasSelected {
+                        viewModel.showingExitCameraConfirmation = true
+                    } else {
+                        didPressCancel()
+                    }
+                },
+                { viewModel.setPickerMode(.cameraSelection) }, // show preview of taken photos
+                { Task { await cameraViewModel.takePhoto() } }, // takePhoto
+                { Task { await cameraViewModel.startVideoCapture() } }, // start record video
+                { Task { await cameraViewModel.stopVideoCapture() } }, // stop record video
+                { Task { await cameraViewModel.toggleFlash() } }, // flash off/on
+                { Task { await cameraViewModel.flipCamera() } } // camera back/front
+            )
+            
+            if cameraViewModel.isLoading {
+                theme.main.cameraBackground
+                    .overlay(
+                        ProgressView()
+                            .progressViewStyle(CircularProgressViewStyle(tint: theme.main.cameraText))
+                            .scaleEffect(1.5)
+                    )
+            }
+        }
         .onChange(of: cameraViewModel.capturedPhoto) { newValue in
             viewModel.pickedMediaUrl = newValue
             didTakePicture()
@@ -80,29 +92,40 @@ struct StandardConrolsCameraView: View {
             }
             .padding(.top, UIApplication.safeArea.top)
 
-            LiveCameraView(
-                session: cameraViewModel.captureSession,
-                videoGravity: .resizeAspectFill,
-                orientation: .portrait
-            )
-            .overlay {
-                if cameraViewModel.snapOverlay {
-                    Rectangle()
+            ZStack {
+                LiveCameraView(
+                    session: cameraViewModel.captureSession,
+                    videoGravity: .resizeAspectFill,
+                    orientation: .portrait
+                )
+                .overlay {
+                    if cameraViewModel.snapOverlay {
+                        Rectangle()
+                    }
+                }
+                .gesture(
+                    MagnificationGesture()
+                        .onChanged { value in
+                            if cameraViewModel.zoomAllowed {
+                                cameraViewModel.zoomChanged(value)
+                            }
+                        }
+                        .onEnded { value in
+                            if cameraViewModel.zoomAllowed {
+                                cameraViewModel.zoomEnded(value)
+                            }
+                        }
+                )
+                
+                if cameraViewModel.isLoading {
+                    theme.main.cameraBackground
+                        .overlay(
+                            ProgressView()
+                                .progressViewStyle(CircularProgressViewStyle(tint: theme.main.cameraText))
+                                .scaleEffect(1.5)
+                        )
                 }
             }
-            .gesture(
-                MagnificationGesture()
-                    .onChanged { value in
-                        if cameraViewModel.zoomAllowed {
-                            cameraViewModel.zoomChanged(value)
-                        }
-                    }
-                    .onEnded { value in
-                        if cameraViewModel.zoomAllowed {
-                            cameraViewModel.zoomEnded(value)
-                        }
-                    }
-            )
 
             VStack(spacing: 10) {
                 if cameraSelectionService.hasSelected {

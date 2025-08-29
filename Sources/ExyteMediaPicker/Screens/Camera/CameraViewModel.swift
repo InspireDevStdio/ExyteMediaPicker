@@ -30,6 +30,7 @@ final actor CameraViewModel: NSObject, ObservableObject {
     @MainActor @Published private(set) var snapOverlay = false
     @MainActor @Published private(set) var zoomAllowed = false
     @MainActor @Published private(set) var capturedPhoto: URL?
+    @MainActor @Published private(set) var isLoading = true
 
     let captureSession = AVCaptureSession()
 
@@ -50,6 +51,9 @@ final actor CameraViewModel: NSObject, ObservableObject {
         Task {
             await configureSession()
             captureSession.startRunning()
+            await MainActor.run {
+                self.isLoading = false
+            }
         }
     }
 
