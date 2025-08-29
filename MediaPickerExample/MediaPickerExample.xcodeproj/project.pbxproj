@@ -3,11 +3,10 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 60;
 	objects = {
 
 /* Begin PBXBuildFile section */
-		5B2068782D9BE32700485134 /* ExyteMediaPicker in Frameworks */ = {isa = PBXBuildFile; productRef = 5B2068772D9BE32700485134 /* ExyteMediaPicker */; };
 		5BFF684D2AD68B990099D333 /* MediaCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BFF68432AD68B990099D333 /* MediaCell.swift */; };
 		5BFF684E2AD68B990099D333 /* FilterMediaPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BFF68442AD68B990099D333 /* FilterMediaPicker.swift */; };
 		5BFF684F2AD68B990099D333 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5BFF68452AD68B990099D333 /* Assets.xcassets */; };
@@ -16,6 +15,7 @@
 		5BFF68522AD68B990099D333 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BFF68492AD68B990099D333 /* AppDelegate.swift */; };
 		5BFF68532AD68B990099D333 /* Application.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BFF684A2AD68B990099D333 /* Application.swift */; };
 		5BFF68542AD68B990099D333 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BFF684B2AD68B990099D333 /* ContentView.swift */; };
+		B228434A2E61B73100A36B02 /* ExyteMediaPicker in Frameworks */ = {isa = PBXBuildFile; productRef = B22843492E61B73100A36B02 /* ExyteMediaPicker */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -37,7 +37,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5B2068782D9BE32700485134 /* ExyteMediaPicker in Frameworks */,
+				B228434A2E61B73100A36B02 /* ExyteMediaPicker in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -110,7 +110,7 @@
 			);
 			name = MediaPickerExample;
 			packageProductDependencies = (
-				5B2068772D9BE32700485134 /* ExyteMediaPicker */,
+				B22843492E61B73100A36B02 /* ExyteMediaPicker */,
 			);
 			productName = MediaPickerExample;
 			productReference = 5BFF68312AD689C80099D333 /* MediaPickerExample.app */;
@@ -141,6 +141,7 @@
 			);
 			mainGroup = 5BFF68282AD689C80099D333;
 			packageReferences = (
+				B22843482E61B73100A36B02 /* XCLocalSwiftPackageReference "../../ExyteMediaPicker" */,
 			);
 			productRefGroup = 5BFF68322AD689C80099D333 /* Products */;
 			projectDirPath = "";
@@ -400,8 +401,15 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCLocalSwiftPackageReference section */
+		B22843482E61B73100A36B02 /* XCLocalSwiftPackageReference "../../ExyteMediaPicker" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../../ExyteMediaPicker;
+		};
+/* End XCLocalSwiftPackageReference section */
+
 /* Begin XCSwiftPackageProductDependency section */
-		5B2068772D9BE32700485134 /* ExyteMediaPicker */ = {
+		B22843492E61B73100A36B02 /* ExyteMediaPicker */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = ExyteMediaPicker;
 		};
