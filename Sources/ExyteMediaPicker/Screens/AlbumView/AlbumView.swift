@@ -2,6 +2,12 @@
 //  Created by Alex.M on 27.05.2022.
 //
 
+public enum LiveCameraCellStyle {
+    case none
+    case small // 1 cell in photos grid
+    case prominant // 2 cell height
+}
+
 import SwiftUI
 import ExyteAnchoredPopup
 
@@ -17,8 +23,8 @@ struct AlbumView: View {
     @Binding var showingCamera: Bool
     @Binding var currentFullscreenMedia: Media?
 
-    var shouldShowCamera: Bool
     var selectionParamsHolder: SelectionParamsHolder
+    var mediaPickerParamsHolder: MediaPickerParamsHolder
     var dismiss: ()->()
 
     @State private var fullscreenItem: AssetMediaModel.ID?
@@ -43,7 +49,7 @@ struct AlbumView: View {
             VStack(spacing: 0) {
                 PermissionActionView(type: .library(permissionsService.photoLibraryPermissionStatus))
 
-                if shouldShowCamera {
+                if mediaPickerParamsHolder.liveCameraCell != .none {
                     PermissionActionView(type: .camera(permissionsService.cameraPermissionStatus))
                 }
 
@@ -69,11 +75,23 @@ struct AlbumView: View {
             }
         }
     }
+    
+    private func getLiveCameraCell() -> LiveCameraCellStyle {
+        #if targetEnvironment(simulator)
+        return .none
+        #else
+        return if permissionsService.cameraPermissionStatus != .authorized {
+            .none
+        } else {
+            mediaPickerParamsHolder.liveCameraCell
+        }
+        #endif
+    }
 
     var mediasGrid: some View {
-        MediasGrid(viewModel.assetMediaModels) {
+        MediasGrid(viewModel.assetMediaModels, liveCameraCell: getLiveCameraCell()) {
 #if !targetEnvironment(simulator)
-            if shouldShowCamera && permissionsService.cameraPermissionStatus == .authorized {
+            if getLiveCameraCell() != .none && permissionsService.cameraPermissionStatus == .authorized {
                 LiveCameraCell {
                     showingCamera = true
                 }
