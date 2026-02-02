@@ -24,13 +24,6 @@ struct FullscreenContainer: View {
         assetMediaModels.first { $0.id == selection }
     }
 
-    private var selectionServiceIndex: Int? {
-        guard let selectedMediaModel = selectedMediaModel else {
-            return nil
-        }
-        return selectionService.index(of: selectedMediaModel)
-    }
-
     var body: some View {
         VStack {
             controlsOverlay
@@ -38,6 +31,7 @@ struct FullscreenContainer: View {
                 contentView(g.size)
             }
         }
+        .environmentObject(selectionService)
         .padding(.top, UIApplication.safeArea.top)
         .background {
             theme.main.fullscreenPhotoBackground
@@ -121,11 +115,19 @@ struct FullscreenContainer: View {
                     }
                     .padding(.horizontal, 20)
                 } else {
-                    SelectionIndicatorView(index: selectionServiceIndex, isFullscreen: true, canSelect: selectionService.canSelect(assetMediaModel: selectedMediaModel), selectionParamsHolder: selectionParamsHolder)
-                        .padding(.horizontal, 20)
-                        .onTapGesture {
-                            selectionService.onSelect(assetMediaModel: selectedMediaModel) // for video selection, since tap on video is toggle play
-                        }
+                    // TimelineView: popup runs in a separate UIWindow so SwiftUI observation doesn't propagate; re-read selection on a schedule.
+                    TimelineView(.periodic(from: .now, by: 0.15)) { _ in
+                        SelectionIndicatorView(
+                            index: selectionService.index(of: selectedMediaModel),
+                            isFullscreen: true,
+                            canSelect: selectionService.canSelect(assetMediaModel: selectedMediaModel),
+                            selectionParamsHolder: selectionParamsHolder
+                        )
+                    }
+                    .padding(.horizontal, 20)
+                    .onTapGesture {
+                        selectionService.onSelect(assetMediaModel: selectedMediaModel)
+                    }
                 }
             }
         }

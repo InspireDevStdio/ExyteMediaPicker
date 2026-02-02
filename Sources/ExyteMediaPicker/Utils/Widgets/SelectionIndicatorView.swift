@@ -6,8 +6,6 @@ import SwiftUI
 
 struct SelectionIndicatorView: View {
 
-    @EnvironmentObject private var selectionService: SelectionService
-
     @Environment(\.mediaPickerTheme) var theme
 
     var index: Int?
